@@ -1,0 +1,9 @@
+{
+  "name": "agent-rules-kit-lite",
+  "owner": { "name": "wilzap" },
+  "metadata": { "description": "Free Cursor rules for Next.js 16 + TypeScript and Python + FastAPI, with matching AGENTS.md, CLAUDE.md and Copilot files in the same repo." },
+  "plugins": [
+    { "name": "nextjs-16-agent-guards", "source": "plugins/nextjs-16-agent-guards", "description": "Next.js 16 + TypeScript (App Router) guards for coding agents." },
+    { "name": "fastapi-agent-guards", "source": "plugins/fastapi-agent-guards", "description": "Python + FastAPI guards for coding agents." }
+  ]
+}
