@@ -1,0 +1,12 @@
+---
+description: Security rules for Python + FastAPI. Apply when handling auth, user input, secrets, uploads, or network calls
+alwaysApply: false
+---
+
+# Security: Python + FastAPI
+
+- Enforce authorization in a dependency so a route cannot forget it. Check object ownership in the query, not after loading.
+- Build SQL only with bound parameters or the ORM. Use the password hashing library already in the repo (argon2 or bcrypt).
+- Verify JWT signature, expiry, issuer, and audience, and pin the accepted algorithms. Keep access tokens short-lived.
+- Limit upload size and validate content type. Do not echo internal error details to clients.
+- Disable the interactive docs and schema (`docs_url=None`, `redoc_url=None`, `openapi_url=None`) in production when the API is not public.
