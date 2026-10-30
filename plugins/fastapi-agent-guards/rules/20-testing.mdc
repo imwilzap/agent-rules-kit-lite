@@ -1,0 +1,14 @@
+---
+description: Testing rules for Python + FastAPI
+globs: "tests/**,**/test_*.py,**/*_test.py"
+alwaysApply: false
+---
+
+# Testing: Python + FastAPI
+
+- Test through the app with `httpx.AsyncClient(transport=httpx.ASGITransport(app=app))` and `pytest-asyncio` or `anyio`, following whichever the repo already uses.
+- `AsyncClient` does not run `lifespan`. When startup state matters, wrap the app in `asgi-lifespan`'s `LifespanManager`, or use `TestClient` as a context manager.
+- Replace dependencies with `app.dependency_overrides` and clear them after each test.
+- Isolate the database per test with a rolled-back transaction or a fresh schema. Build data with factories, not shared mutable fixtures.
+- Cover the unhappy paths for each endpoint: 422 validation, 401 and 403 auth, and 404 not found.
+- Run `alembic check` in CI so a model change without a migration fails, and test `upgrade head` on an empty database.
