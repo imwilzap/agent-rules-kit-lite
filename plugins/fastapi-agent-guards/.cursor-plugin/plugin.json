@@ -1,0 +1,11 @@
+{
+  "name": "fastapi-agent-guards",
+  "version": "1.0.0",
+  "description": "Cursor rules for Python + FastAPI: blocking calls in async routes, Pydantic v2 idioms, lifespan, async SQLAlchemy loading, Alembic, CORS and auth. Checked against the FastAPI, SQLAlchemy and Alembic docs.",
+  "author": { "name": "wilzap" },
+  "homepage": "https://github.com/imwilzap/agent-rules-kit-lite",
+  "repository": "https://github.com/imwilzap/agent-rules-kit-lite",
+  "license": "MIT",
+  "keywords": ["fastapi", "python", "pydantic-v2", "sqlalchemy", "alembic", "async", "cursor-rules", "agents-md"],
+  "rules": "./rules/"
+}
