@@ -47,6 +47,6 @@ Avoid loading the same rules twice: Cursor reads both `AGENTS.md` and `.cursor/r
 
 ## Want the other stacks?
 
-The paid [Agent Rules Kit](https://wilzap.gumroad.com/l/ofhjr) (CAD 19) adds Go, Rust, Django and React Native stacks, a 4-page playbook on writing and testing rules, and a QA checklist. This Lite pack stays free and is identical to those two stacks in the paid kit.
+The paid [Agent Rules Kit](https://wilzap.gumroad.com/l/ofhjr) (CAD 19) adds Go, Rust, Django and React Native stacks, a 4-page playbook on writing and testing rules, and a QA checklist. This Lite pack stays free, is MIT licensed, and is identical to those two stacks in the paid kit.
 
-[`CHANGELOG.md`](CHANGELOG.md) · [`SOURCES.md`](SOURCES.md) · [`LICENSE.md`](LICENSE.md)
+[`CHANGELOG.md`](CHANGELOG.md) · [`SOURCES.md`](SOURCES.md) · [`LICENSE`](LICENSE) (MIT)
