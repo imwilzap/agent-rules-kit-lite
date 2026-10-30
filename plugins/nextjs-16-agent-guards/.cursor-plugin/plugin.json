@@ -1,0 +1,11 @@
+{
+  "name": "nextjs-16-agent-guards",
+  "version": "1.0.0",
+  "description": "Cursor rules for Next.js 16 + TypeScript (App Router): async request APIs, proxy.ts, removed next lint, server/client boundaries, Server Action authorization. Checked against the Next.js 16 upgrade guide.",
+  "author": { "name": "wilzap" },
+  "homepage": "https://github.com/imwilzap/agent-rules-kit-lite",
+  "repository": "https://github.com/imwilzap/agent-rules-kit-lite",
+  "license": "MIT",
+  "keywords": ["nextjs", "nextjs-16", "typescript", "app-router", "react-19", "cursor-rules", "agents-md", "proxy-ts", "turbopack"],
+  "rules": "./rules/"
+}
