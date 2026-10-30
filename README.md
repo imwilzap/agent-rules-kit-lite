@@ -1,49 +1,52 @@
-# Agent Rules Kit Lite
+# Agent Rules Kit Lite: AGENTS.md, CLAUDE.md, Cursor rules and Copilot instructions for Next.js 16 and FastAPI
 
-Free instruction files for AI coding agents, for two stacks: **Next.js 16 + TypeScript (App Router)** and **Python + FastAPI**. Each stack comes in four formats so you can use the one your tool reads: `AGENTS.md`, `CLAUDE.md` (imports `AGENTS.md`), `.cursor/rules/*.mdc`, and `.github/copilot-instructions.md`.
+Free, short instruction files that stop AI coding agents (Claude Code, Cursor, GitHub Copilot, Codex and anything else that reads `AGENTS.md`) from repeating the mistakes they repeat in **Next.js 16 + TypeScript** and **Python + FastAPI** projects.
 
-The files are short (under 90 lines for `AGENTS.md`). Every line is a fact about the repo, a guard against a known agent mistake, or a verification step. They were checked against vendor documentation on 2026-10-29; see `SOURCES.md`.
+Each stack is the same rules in four formats, so you copy the one your tool reads:
 
-## A real excerpt
+| Tool | File |
+|---|---|
+| Any tool that reads AGENTS.md (Codex, Cursor, Copilot agents, Claude Code without a CLAUDE.md) | `AGENTS.md` |
+| Claude Code | `CLAUDE.md` (one `@AGENTS.md` import, so rules load once) |
+| Cursor | `.cursor/rules/*.mdc` (always-on core, glob-scoped conventions and tests, agent-decided security) |
+| GitHub Copilot | `.github/copilot-instructions.md` |
 
-From `stacks/nextjs-ts/AGENTS.md`, section "Known agent mistakes":
+## What the rules catch
 
-```md
-- Typing `{ params }: { params: { id: string } }` and reading `params.id` synchronously. Await the Promise instead.
-- Creating `middleware.ts` in a Next.js 16 project. It is deprecated and cannot be configured for the Node.js runtime. Use `proxy.ts`, and keep `middleware.ts` only if the project must run on the Edge runtime.
-- Running `next lint`. Use the repo's `lint` script.
-- Calling `revalidateTag('posts')` with one argument, which is a TypeScript error in Next.js 16. Pass a cacheLife profile or use `updateTag` in a Server Action.
-```
+Next.js 16 (from `stacks/nextjs-ts/AGENTS.md`):
+- Reading `params.id` synchronously. In Next.js 16 `params`, `searchParams`, `cookies()` and `headers()` are Promises.
+- Creating `middleware.ts`. Next.js 16 uses `proxy.ts` (Node.js runtime only; `middleware.ts` stays only for Edge).
+- Running `next lint`, which was removed, and calling `revalidateTag('posts')` with one argument.
+- Trusting `proxy.ts` as the only authorization check on Server Actions.
+
+FastAPI (from `stacks/python-fastapi/AGENTS.md`):
+- `requests` or `time.sleep` inside `async def`, which stalls the event loop.
+- Pydantic v1 idioms (`.dict()`, `@validator`, `class Config`) in v2 code, and `@app.on_event` instead of `lifespan`.
+- Lazy relationships and `expire_on_commit` on an async session (`MissingGreenlet`), and one session shared across `asyncio.gather` tasks.
+- `allow_origins=["*"]` with `allow_credentials=True`.
 
 ## Install
 
+Pick one stack and copy its files into your repo root, then edit **Commands** and **Project map** to match your project and delete rules that do not apply:
+
 ```bash
-git clone https://github.com/imwilzap/agent-rules-kit-lite.git
-cp -R agent-rules-kit-lite/stacks/nextjs-ts/. /path/to/your/repo/
-# or: cp -R agent-rules-kit-lite/stacks/python-fastapi/. /path/to/your/repo/
+git clone https://github.com/imwilzap/agent-rules-kit-lite
+cp -R agent-rules-kit-lite/stacks/nextjs-ts/. /path/to/your/repo/        # or stacks/python-fastapi
 ```
 
-Then open `AGENTS.md`, fix **Commands** and **Project map** to match your repo, and delete rules that do not apply.
+Cursor only: copy `stacks/<stack>/.cursor/rules/` into your repo.
 
-Keep only the files your tool reads, so the same rules are not loaded twice:
+Avoid loading the same rules twice: Cursor reads both `AGENTS.md` and `.cursor/rules`, so keep one of them. Claude Code reads `AGENTS.md` only when no `CLAUDE.md` exists in your working directory or above it; this pack's `CLAUDE.md` imports `AGENTS.md` for that reason. Check your tool's current docs for what it loads.
 
-- Claude Code loads `CLAUDE.md`, which here imports `AGENTS.md`. Keep both files, or edit them together.
-- Cursor reads `.cursor/rules/*.mdc` and also `AGENTS.md`. Keep one of them.
-- GitHub Copilot reads `.github/copilot-instructions.md`, and its agents also read `AGENTS.md`.
-- Check each tool's current documentation for which files it loads. They change.
+## Honest limits
 
-## What this does not do
+- Rules reduce mistakes. They do not guarantee an agent follows them, and they do not replace tests, linters or review.
+- Nothing here was benchmarked against specific models.
+- Facts and file formats were checked against the vendor documentation listed in [`SOURCES.md`](SOURCES.md) on 2026-10-29. Tools change quickly; check against your versions, and open an issue (Rule correction) if something is wrong.
+- Written with AI assistance and reviewed against those sources by the maintainer.
 
-Rules guide an agent. They do not guarantee it follows them, and they have not been benchmarked against specific models. Keep your tests, linters, and code review in place.
+## Want the other stacks?
 
-## The full kit
+The paid [Agent Rules Kit](https://wilzap.gumroad.com/l/ofhjr) (CAD 19) adds Go, Rust, Django and React Native stacks, a 4-page playbook on writing and testing rules, and a QA checklist. This Lite pack stays free and is identical to those two stacks in the paid kit.
 
-The full Agent Rules Kit (CAD 19) adds Go, Rust, Django, and React Native stacks (six in total), a playbook PDF on writing, testing, and maintaining rules, a QA checklist, and a changelog: https://wilzap.gumroad.com/l/ofhjr.
-
-The same free pack is also on Gumroad: https://wilzap.gumroad.com/l/dysxru
-
-## License
-
-This repo uses a custom Lite license, in `LICENSE.md` (not a standard open-source license). In short: you may use, copy, modify, and share the files, including in commercial projects. You keep the license file with unmodified copies and you may not sell the pack. A standard MIT license would allow reselling, which is not the intent, so GitHub shows the license as "Other".
-
-Corrections are welcome as issues. See `CHANGELOG.md` for what changed.
+[`CHANGELOG.md`](CHANGELOG.md) · [`SOURCES.md`](SOURCES.md) · [`LICENSE.md`](LICENSE.md)
