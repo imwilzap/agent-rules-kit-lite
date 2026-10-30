@@ -1,0 +1,38 @@
+---
+description: Code conventions and known agent mistakes for Next.js 16 + TypeScript (App Router)
+globs: "**/*.ts,**/*.tsx"
+alwaysApply: false
+---
+
+# Conventions: Next.js 16 + TypeScript (App Router)
+
+## Conventions
+- Treat every component in `app/` as a Server Component. Add `"use client"` to the smallest leaf that needs state, effects, or browser APIs.
+- Await request APIs in server code: `params`, `searchParams`, `cookies()`, `headers()`, and `draftMode()` are Promises in Next.js 16. Type pages with the generated `PageProps<'/route'>` (run `npx next typegen`).
+- Put request interception (redirects, rewrites, header checks) in `proxy.ts` with an exported `proxy` function. It runs on the Node.js runtime only; keep `middleware.ts` only if the project must run on the Edge runtime. Keep it thin and do real authorization next to the data.
+- Before using a Next.js API from memory, read its page under `node_modules/next/dist/docs/` (16.2+) or the docs for the installed version. Model knowledge often describes Next.js 14 or 15.
+- Fetch initial data in Server Components or route handlers. Use client-side fetching only for interaction-driven updates.
+- Use Server Actions for mutations triggered from your own UI and route handlers for webhooks and external clients. Return a typed result for expected failures and throw only for unexpected ones.
+- Treat Server Actions and route handlers as public endpoints: validate input with the repo's schema library (zod if present), check the session, then act.
+- Write strict TypeScript. Narrow `unknown` instead of using `any`, and give any `@ts-expect-error` a one-line reason. Derive types from schemas where schemas exist.
+- Read env vars through one validated module in `lib/`. Only `NEXT_PUBLIC_*` values reach the browser, and they are inlined at build time. Start modules that touch secrets or the database with `import "server-only"`.
+- Use `next/link`, `next/image`, and `next/font`. Allow remote images with `images.remotePatterns` (`images.domains` is deprecated) and list local image paths that carry a query string in `images.localPatterns`.
+- Add caching (`use cache`, `cacheComponents`, `cacheLife`) only when asked. Tag cached data with `cacheTag` and name what invalidates it.
+- Invalidate with `revalidateTag('posts', 'max')`, passing a cacheLife profile as the second argument. Call `updateTag('posts')` inside a Server Action when the user must see their own write immediately.
+- Give every parallel route slot (such as `@modal`) a `default.tsx` that returns `null` or calls `notFound()`. Next.js 16 fails the build when one is missing.
+- Next.js 16 uses Turbopack for `next dev` and `next build`. A custom `webpack` config, sometimes added by a plugin, fails the build unless the script passes `--webpack`, so ask before adding one.
+- Follow the styling system already in use (Tailwind, CSS modules, or other) instead of introducing a second one.
+
+## Known agent mistakes
+Check your diff against this list before you finish.
+- Typing `{ params }: { params: { id: string } }` and reading `params.id` synchronously. Await the Promise instead.
+- Creating `middleware.ts` in a Next.js 16 project. It is deprecated and cannot be configured for the Node.js runtime. Use `proxy.ts`, and keep `middleware.ts` only if the project must run on the Edge runtime.
+- Running `next lint`. Use the repo's `lint` script.
+- Calling `revalidateTag('posts')` with one argument, which is a TypeScript error in Next.js 16. Pass a cacheLife profile or use `updateTag` in a Server Action.
+- Reading `cookies()` or `headers()` inside a `use cache` function. Read them outside and pass the values in as arguments.
+- Adding `"use client"` to a whole page to silence one hook error. Extract the interactive part into a client leaf.
+- Passing functions or class instances as props from a Server Component to a Client Component. Pass serializable data and move behavior into the client leaf.
+- Importing server-only code into a client file, which bundles secrets. Check import chains when a client file gains an import from `lib/`.
+- Reading `process.env.X` in a client component without the `NEXT_PUBLIC_` prefix, which is `undefined` in the browser.
+- Expecting a changed `NEXT_PUBLIC_*` value to reach a deployed build without rebuilding, because it was inlined at build time.
+- Trusting `await res.json()` as typed data. Parse it with the schema first.
