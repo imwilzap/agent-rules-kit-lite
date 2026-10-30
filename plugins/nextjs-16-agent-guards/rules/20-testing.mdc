@@ -1,0 +1,13 @@
+---
+description: Testing rules for Next.js 16 + TypeScript (App Router)
+globs: "**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx,e2e/**"
+alwaysApply: false
+---
+
+# Testing: Next.js 16 + TypeScript (App Router)
+
+- Use the test runner already configured (Vitest or Jest) with Testing Library, and run it once with `vitest run` or `jest`. Query by role and label, and assert on what the user sees.
+- Vitest does not support async Server Components. Move their logic into plain functions in `lib/` and cover the rendered page with a Playwright spec.
+- Run Playwright against a production build (`pnpm build`, then `pnpm start`). Dev-mode compilation makes specs slow and flaky.
+- Cover each Server Action and route handler with at least a valid case, an invalid-input case, and an unauthenticated case.
+- Keep tests deterministic: freeze time, stub network calls at the boundary, and avoid arbitrary timeouts.

@@ -1,0 +1,14 @@
+---
+description: Security rules for Next.js 16 + TypeScript (App Router). Apply when handling auth, user input, secrets, uploads, or network calls
+alwaysApply: false
+---
+
+# Security: Next.js 16 + TypeScript (App Router)
+
+- Check authorization inside every Server Action and route handler, not only in `proxy.ts`. Verify the caller may touch that specific record.
+- Read data through a `server-only` data access layer that checks the session and returns plain DTOs with only the fields the UI needs, never whole database rows.
+- Treat every exported function in a `"use server"` file as a public HTTP endpoint, including ones you believe are unused.
+- Behind a reverse proxy that changes the host, set `serverActions.allowedOrigins` instead of disabling the Origin check.
+- Render user content as text. Use `dangerouslySetInnerHTML` only with sanitized, trusted HTML.
+- Set auth cookies as `httpOnly`, `secure`, and `sameSite`. Keep tokens out of `localStorage` and logs.
+- Return generic errors to the browser and log details on the server.
